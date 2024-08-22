@@ -18,10 +18,25 @@ model User {
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
+  role          Role?           @relation(fields: [roleId], references: [id])
+  roleId        Int?
   Authenticator Authenticator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  roles Role[]
 }
 
 model Account {

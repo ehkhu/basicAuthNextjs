@@ -1,14 +1,24 @@
 import NextAuth, { CredentialsSignin } from "next-auth"
-// import { PrismaAdapter } from "@auth/prisma-adapter"
-// import { PrismaClient } from "@prisma/client"
 import credentials from "next-auth/providers/credentials"
-import { getUserFromDb, hashPassword, verifyPassword } from "./lib/utils"
-import prisma from "./prisma/client"
-
-// const prisma = new PrismaClient()
+import { getUserFromDb} from "./lib/utils"
 
 class InvalidLoginError extends CredentialsSignin {
   code = "Invalid identifier or password"
+}
+
+function  authUserFormatter(authUser:any){
+  if (authUser) {
+    console.log(authUser.email);
+  const  user = {
+      id: authUser.id,
+      name:authUser.name,
+      email: authUser.email,
+      role: authUser.role?.name,
+      permissions: authUser.role?.permissions.map((perm:any) => perm.name),
+    };
+    return user;
+  }
+  return {};
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -27,14 +37,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       authorize: async (credentials) => {
         // logic to verify if the user exists
-        const user = await getUserFromDb(credentials.email+"", credentials.password+"");
-
-        if (!user) {
+        const authUser = await getUserFromDb(credentials.email+"", credentials.password+"");
+        if (!authUser) {
           throw new Error("Invalid email or password");
         }
- 
+        console.log("Auth user : ",authUser)
         // return user object with their profile data
-        console.log(user);
+        const user = await authUserFormatter(authUser);  // prepare for auth permission
         return user
       },
       
@@ -46,9 +55,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     //   if (pathname === "/middleware-example") return !!auth
     //   return true
     // },
-    jwt({ token, trigger, session }) {
+    
+    jwt({ token, trigger, session, user }) {
       if (trigger === "update") token.name = session?.user?.name
+      if(user) {
+        token.role = user.role
+        token.permissions = user.permissions;
+      } // add more fields by next-auth.d.ts
       return token
     },
+    session({ session, token }) {
+      if (token) {
+        session.user.role = token.role as string;
+        session.user.permissions = token.permissions as string;
+      }
+      return session;
+    }
+
   },
 })
