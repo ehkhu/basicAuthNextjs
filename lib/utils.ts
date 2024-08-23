@@ -97,3 +97,16 @@ async function assignRoleToUser(userId: number, roleId: number) {
     throw error;
   }
 }
+
+
+type FetcherArgs = [input: RequestInfo, init?: RequestInit];
+type FetcherResult = Promise<any>;
+
+export const fetcher: (...args: FetcherArgs) => FetcherResult = (...args) =>
+  fetch(...args)
+    .then((res) => {
+      if (!res.ok) {
+        return Promise.reject(new Error('Network response was not ok'));
+      }
+      return res.json();
+    });

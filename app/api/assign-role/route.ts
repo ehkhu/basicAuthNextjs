@@ -16,10 +16,10 @@ export async function POST(request: Request) {
         },
       });
 
-      NextResponse.json({ success: true, user: updatedUser });
+      return NextResponse.json({ success: true, user: updatedUser });
     } catch (error) {
       console.error('Error assigning role:', error);
-      NextResponse.json({ error: 'Failed to assign role' });
+      return  NextResponse.json({ error: 'Failed to assign role' });
     }
-    return NextResponse.json({ message: "success" });
+    
 }
