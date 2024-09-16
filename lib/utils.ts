@@ -1,6 +1,8 @@
 import prisma from "@/prisma/client";
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+// import { v2 as cloudinary } from "cloudinary";
+
 const bcrypt = require('bcryptjs');
 
 export function cn(...inputs: ClassValue[]) {
@@ -110,3 +112,5 @@ export const fetcher: (...args: FetcherArgs) => FetcherResult = (...args) =>
       }
       return res.json();
     });
+
+    

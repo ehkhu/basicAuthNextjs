@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useRoles } from '@/hook/useRoles';
+import { useEffect, useState } from 'react';
 
 // Define the Permission type
 
@@ -24,6 +25,8 @@ function EditRolePermissionsForm({
   allPermissions: Permission[];
 }) {
 
+  
+
 const [roles, setRoles] = useState<Role[]>(allRoles);
 
 // Function to update roles
@@ -41,6 +44,7 @@ const updateRoles = async () => {
   }
 };
 
+  
 
   // selectedRole will be an object containing role data or null
   const [selectedRole, setSelectedRole] = useState<Role| null>();
