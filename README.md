@@ -8,6 +8,7 @@ npm prisma migrate dev
 
 
 for image upload 
+ref : https://cloudinary.com/blog/cloudinary-image-uploads-using-nextjs-app-router
  npm i next-cloudinary cloudinary
  lib/db.ts for fake db
  compoments/atatar-upload.tsx
